@@ -1,0 +1,72 @@
+File: scripts/migration/rule_converter.py
+#!/usr/bin/env python3
+"""
+SIEM Rule Conversion Utility
+Converts detection rules between different SIEM platforms
+"""
+
+import re
+import json
+import yaml
+from typing import Dict, List
+
+class RuleConverter:
+    def __init__(self):
+        self.platform_mappings = self.load_platform_mappings()
+    
+    def load_platform_mappings(self):
+        """Load field mappings between SIEM platforms"""
+        return {
+            'splunk_to_elastic': {
+                'sourcetype': 'event.dataset',
+                'host': 'host.name',
+                'source': 'log.file.path',
+                'index': 'event.dataset'
+            },
+            'arcsight_to_splunk': {
+                'deviceVendor': 'vendor',
+                'deviceProduct': 'product',
+                'deviceEventCategory': 'category',
+                'sourceAddress': 'src_ip'
+            }
+        }
+    
+    def convert_splunk_to_elastic(self, splunk_query: str) -> str:
+        """Convert Splunk SPL query to Elasticsearch Query DSL"""
+        # Basic conversion logic - would be expanded for production
+        elastic_query = {
+            "query": {
+                "bool": {
+                    "must": [],
+                    "filter": []
+                }
+            }
+        }
+        
+        # Parse Splunk query and convert to Elasticsearch format
+        if 'sourcetype=' in splunk_query:
+            sourcetype = re.search(r'sourcetype=(\w+)', splunk_query).group(1)
+            elastic_query["query"]["bool"]["filter"].append({
+                "term": {"event.dataset": sourcetype}
+            })
+        
+        return json.dumps(elastic_query, indent=2)
+    
+    def migrate_dashboards(self, source_platform: str, target_platform: str):
+        """Migrate dashboards between SIEM platforms"""
+        migration_plan = {
+            'total_dashboards': 0,
+            'convertible': 0,
+            'manual_conversion_required': 0,
+            'conversion_details': []
+        }
+        
+        # Implementation would include actual dashboard parsing and conversion
+        return migration_plan
+
+if __name__ == "__main__":
+    converter = RuleConverter()
+    # Example conversion
+    splunk_query = "sourcetype=windows_logs | where EventCode=4624"
+    elastic_query = converter.convert_splunk_to_elastic(splunk_query)
+    print(f"Converted query:\n{elastic_query}")

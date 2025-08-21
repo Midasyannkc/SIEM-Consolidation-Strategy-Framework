@@ -1,0 +1,110 @@
+Prerequisites
+
+Python 3.8+
+Access to current SIEM platform APIs
+Network access to log sources
+Administrative permissions for assessment
+Installation 
+git clone https://github.com/Midasyannkc/siem-consolidation-strategy.git
+cd siem-consolidation-strategy
+pip install -r requirements.txt
+Initial Assessment 
+# Run comprehensive SIEM assessment
+python scripts/assessment/current_siem_audit.py --config config/assessment.yaml
+
+# Analyze log volumes and patterns
+python scripts/assessment/log_volume_analyzer.py --days 30 --output reports/
+
+# Map existing use cases
+python scripts/assessment/use_case_mapper.py --platform splunk --export csv
+Core Components 
+1. Assessment Engine
+File:  scripts/assessment/current_siem_audit.py
+#!/usr/bin/env python3
+"""
+SIEM Assessment and Audit Tool
+Performs comprehensive analysis of existing SIEM infrastructure
+"""
+
+import json
+import requests
+import pandas as pd
+from datetime import datetime, timedelta
+import yaml
+
+class SIEMAssessment:
+    def __init__(self, config_path):
+        with open(config_path, 'r') as f:
+            self.config = yaml.safe_load(f)
+        self.results = {}
+    
+    def audit_platform_health(self):
+        """Assess current SIEM platform performance and health"""
+        health_metrics = {
+            'system_performance': self.check_system_performance(),
+            'storage_utilization': self.analyze_storage_usage(),
+            'search_performance': self.benchmark_search_speed(),
+            'integration_status': self.validate_integrations()
+        }
+        return health_metrics
+    
+    def analyze_use_cases(self):
+        """Map and categorize existing security use cases"""
+        use_cases = self.extract_detection_rules()
+        categorized = {
+            'threat_hunting': [],
+            'compliance': [],
+            'incident_response': [],
+            'monitoring': []
+        }
+        
+        for rule in use_cases:
+            category = self.categorize_rule(rule)
+            categorized[category].append(rule)
+        
+        return categorized
+    
+    def calculate_tco(self):
+        """Calculate total cost of ownership for current setup"""
+        costs = {
+            'licensing': self.get_license_costs(),
+            'infrastructure': self.calculate_infrastructure_cost(),
+            'personnel': self.estimate_operational_costs(),
+            'maintenance': self.calculate_maintenance_costs()
+        }
+        return sum(costs.values()), costs
+    
+    def generate_consolidation_plan(self):
+        """Create detailed consolidation roadmap"""
+        plan = {
+            'phase1_assessment': {
+                'duration': '4-6 weeks',
+                'activities': [
+                    'Current state documentation',
+                    'Use case mapping',
+                    'Integration inventory'
+                ]
+            },
+            'phase2_design': {
+                'duration': '6-8 weeks',
+                'activities': [
+                    'Target architecture design',
+                    'Migration strategy development',
+                    'Testing framework creation'
+                ]
+            },
+            'phase3_migration': {
+                'duration': '12-16 weeks',
+                'activities': [
+                    'Data migration execution',
+                    'Rule conversion and testing',
+                    'User training and adoption'
+                ]
+            }
+        }
+        return plan
+
+if __name__ == "__main__":
+    assessor = SIEMAssessment('config/assessment.yaml')
+    results = assessor.run_full_assessment()
+    print(json.dumps(results, indent=2))

@@ -1,0 +1,17 @@
+{
+  "current_state": {
+    "platforms": 3,
+    "total_annual_cost": 1200000,
+    "analyst_hours_monthly": 720,
+    "detection_rules": 450,
+    "data_sources": 85
+  },
+  "consolidation_benefits": {
+    "cost_savings": 850000,
+    "efficiency_gains": "65%",
+    "reduced_complexity": "70%",
+    "improved_detection": "45%"
+  },
+  "migration_timeline": "16 weeks",
+  "roi_breakeven": "8 months"
+}
